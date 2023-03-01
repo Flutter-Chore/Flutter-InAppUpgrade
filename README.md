@@ -1,8 +1,10 @@
-# upgrade
+# In App Upgrade
 
-A new Flutter project.
+A Flutter plugin for prompting and help users to upgrade when there is a newer version of this app in the store or repository.
 
-## Getting Started
+## Overview
+
+When a newer app version is available,
 
 This project is a starting point for a Flutter
 [plug-in package](https://flutter.dev/developing-packages/),

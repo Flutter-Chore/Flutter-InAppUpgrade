@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:upgrade/core/upgrade_manager.dart';
 import 'package:upgrade/upgrade.dart';
 
 void main() {
@@ -22,6 +23,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    UpgradeManager.instance.init(
+      appName: "Noob",
+      url: "",
+      currentVersionPath: "assets/version/version.json",
+    );
     initPlatformState();
   }
 
