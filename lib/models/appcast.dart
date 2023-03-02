@@ -8,6 +8,29 @@
 import 'package:upgrade/models/appcast_item.dart';
 
 class Appcast {
+  List<AppcastItem> items;
 
+  Appcast({
+    required this.items,
+  });
+
+  AppcastItem? best() {
+    if (items.isEmpty) { return null; }
+
+    AppcastItem? best;
+    for (var item in items) {
+      if (item.isSupportingHost()) {
+        best ??= item;
+        if (item.version > best.version) {
+          best = item;
+        }
+      }
+    }
+    return best;
+  }
+
+  factory Appcast.fromJson(List<Map<String, dynamic>> json) {
+    return Appcast(items: json.map((item) => AppcastItem.fromJson(item)).toList());
+  }
 }
 

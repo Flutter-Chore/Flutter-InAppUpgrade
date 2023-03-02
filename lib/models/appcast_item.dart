@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:version/version.dart';
 
 class AppcastItem {
@@ -26,8 +28,9 @@ class AppcastItem {
     this.maximumSystemVersion,
     this.fileURL,
     this.contentLength,
-
   });
+
+  bool isSupportingHost() => os?.name == Platform.operatingSystem;
 
   factory AppcastItem.fromJson(Map<String, dynamic> json) {
     return AppcastItem(
