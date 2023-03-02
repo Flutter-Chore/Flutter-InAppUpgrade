@@ -11,7 +11,6 @@ void main() {
     final jsonStr = '''
     {
       "title": "Noob",
-      "tags": ["hello", "world"],
       "date": ${time.millisecondsSinceEpoch},
       "version": "1.9.8-beta+nvidia",
       "os": "android"
@@ -22,7 +21,6 @@ void main() {
 
     expect(item.title, "Noob");
     expect(item.description, null);
-    expect(item.tags, ["hello", "world"]);
     expect(item.os!.name, OS.android.name);
     expect(item.date!.millisecondsSinceEpoch, time.millisecondsSinceEpoch);
     expect(item.version.minor, 9);
