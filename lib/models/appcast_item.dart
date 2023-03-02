@@ -5,7 +5,6 @@ class AppcastItem {
   final String? title;
   final String? description;
   final String? releaseNotes;
-  final List<String>? tags;
   final DateTime? date;
   final Version version;
   final String? displayVersionString;
@@ -19,7 +18,6 @@ class AppcastItem {
     this.title,
     this.description,
     this.releaseNotes,
-    this.tags,
     this.date,
     required this.version,
     this.displayVersionString,
@@ -36,7 +34,6 @@ class AppcastItem {
       title: json['title'],
       description: json['description'],
       releaseNotes: json['releaseNotes'],
-      tags: json['tags']?.cast<String>(),
       date: json['date'] != null ? DateTime.fromMillisecondsSinceEpoch(json['date'] as int) : null,
       version: json['version'] is String
           ? Version.parse(json['version'])
