@@ -1,11 +1,11 @@
 
 enum UpgradeStatus {
+  idle,
   checking,
   available,
   upToDate,
-  dismissed,
-  error,
-  idle,
   downloading,
   readyToInstall,
+  error,
+  dismissed,
 }

@@ -184,6 +184,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
+  version:
+    dependency: transitive
+    description:
+      name: version
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.2"
 sdks:
   dart: ">=2.18.6 <3.0.0"
   flutter: ">=2.5.0"

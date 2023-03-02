@@ -65,6 +65,10 @@ class UpgradeManager {
 
   }
 
+  void dismiss() {
+    _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.dismissed);
+  }
+
   void addListener(void Function() listener) {
     _stateChangeNotifier.addListener(listener);
   }
@@ -81,6 +85,8 @@ class UpgradeManager {
       if (Platform.isAndroid) { SystemNavigator.pop(); } else { exit(0); }
     });
   }
+
+
 
 }
 
