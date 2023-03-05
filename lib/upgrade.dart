@@ -1,3 +1,4 @@
+library upgrade;
 
 import 'upgrade_platform_interface.dart';
 
