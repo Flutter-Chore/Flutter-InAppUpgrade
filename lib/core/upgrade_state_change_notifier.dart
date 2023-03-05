@@ -1,26 +1,35 @@
 
 import 'package:flutter/material.dart';
+import 'package:upgrade/models/appcast_item.dart';
 import 'package:upgrade/models/upgrade_status.dart';
 
 class UpgradeStateChangeNotifier extends ChangeNotifier {
 
   var status = UpgradeStatus.idle;
-  String? currentVersion;
-  String? latestVersion;
+  AppcastItem? current;
+  AppcastItem? latest;
 
   void updateUpgradeStatus({ required UpgradeStatus status }) {
     this.status = status;
     notifyListeners();
   }
 
-  void updateLatestVersion({ required String version }) {
-    latestVersion = version;
+  void updateLatestVersion({ required AppcastItem version }) {
+    latest = version;
+    checkAvailable();
     notifyListeners();
   }
 
-  void updateCurrentVersion({ required String version }) {
-    currentVersion = version;
+  void updateCurrentVersion({ required AppcastItem version }) {
+    current = version;
+    checkAvailable();
     notifyListeners();
+  }
+
+  void checkAvailable() {
+    if (current != null && latest != null && latest! > current!) {
+      updateUpgradeStatus(status: UpgradeStatus.available);
+    }
   }
 
 }

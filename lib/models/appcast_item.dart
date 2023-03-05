@@ -32,6 +32,11 @@ class AppcastItem {
 
   bool isSupportingHost() => os?.name == Platform.operatingSystem;
 
+  bool operator>(AppcastItem item) {
+    if (version > item.version) { return true; }
+    return false;
+  }
+
   factory AppcastItem.fromJson(Map<String, dynamic> json) {
     return AppcastItem(
       title: json['title'],

@@ -13,6 +13,8 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   provider: ^6.0.5
   version: ^3.0.2
+  http: ^0.13.5
+  path_provider: ^2.0.13
 
 dev_dependencies:
   flutter_test:
