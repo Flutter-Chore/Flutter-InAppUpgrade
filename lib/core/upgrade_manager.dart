@@ -24,8 +24,6 @@ class UpgradeManager {
   UpgradeStateChangeNotifier get state => _stateChangeNotifier;
   UpgradeStatus get status => _stateChangeNotifier.status;
 
-  /// The name of the app.
-  late final String _appName;
 
   /// The upgrade appcast file url.
   late final String _url;
@@ -39,12 +37,10 @@ class UpgradeManager {
 
 
   init({
-    required String appName,
     required String url,
     required String currentVersionPath,
     bool closeOnInstalling = true,
   }) {
-    _appName = appName;
     _url = url;
     _currentVersionPath = currentVersionPath;
     _closeOnInstalling = closeOnInstalling;
@@ -64,7 +60,7 @@ class UpgradeManager {
       return;
     }
 
-    final appcast = Appcast.fromJson(json.decode(response.body));
+    final appcast = Appcast.fromJson(List<Map<String, dynamic>>.from(json.decode(response.body)));
     final best = appcast.best();
     if (best != null) {
       _stateChangeNotifier.updateLatestVersion(version: best);
@@ -110,7 +106,7 @@ class UpgradeManager {
     );
   }
 
-  void showInstaller() {
+  void showUpgradeDialog({ required BuildContext context, Widget? dialog }) {
 
   }
 
@@ -132,10 +128,10 @@ class UpgradeManager {
 
   void _loadCurrentVersion() {
     rootBundle.loadString(_currentVersionPath).then((value) {
-      final appcast = Appcast.fromJson(json.decode(value));
+      final appcast = Appcast.fromJson(List<Map<String, dynamic>>.from(json.decode(value)));
       _stateChangeNotifier.updateCurrentVersion(version: appcast.best()!);
-    }).catchError((_) {
-      debugPrint("[UpgradeManager] Cannot load current version info from path: $_currentVersionPath");
+    }).catchError((err) {
+      debugPrint("[UpgradeManager] Cannot load current version info from path: $_currentVersionPath, with error: ${err.toString()}");
       if (Platform.isAndroid) { SystemNavigator.pop(); } else { exit(0); }
     });
   }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:upgrade/core/custom_upgrade_view.dart';
 import 'package:upgrade/core/upgrade_manager.dart';
-import 'package:upgrade/upgrade.dart';
+import 'package:upgrade/default/default_upgrade_status_indicator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,41 +16,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _upgradePlugin = Upgrade();
 
   @override
   void initState() {
     super.initState();
     UpgradeManager.instance.init(
-      appName: "Noob",
-      url: "",
+      url: "http://localhost:8000/appcast/latest",
       currentVersionPath: "assets/version/version.json",
     );
-    initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _upgradePlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +34,80 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: CustomUpgradeView(
+                builder: (context, state) {
+                  if (state.current == null) {
+                    return const Text("Upgrade Current Version: null", style: TextStyle(fontWeight: FontWeight.bold));
+                  }
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Upgrade Current Version: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("title: ${state.current!.title}"),
+                      Text("description: ${state.current!.description}"),
+                      Text("releaseNotes: ${state.current!.releaseNotes}"),
+                      Text("version: ${state.current!.version.toString()}"),
+                      Text("displayVersionString: ${state.current!.displayVersionString}"),
+                      Text("os: ${state.current!.os}"),
+                      Text("minimumSystemVersion: ${state.current!.minimumSystemVersion}"),
+                      Text("maximumSystemVersion: ${state.current!.maximumSystemVersion}"),
+                      Text("fileURL: ${state.current!.fileURL}"),
+                    ],
+                  );
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: CustomUpgradeView(
+                builder: (context, state) {
+                  if (state.latest == null) {
+                    return const Text("Upgrade Latest Version: null", style: TextStyle(fontWeight: FontWeight.bold));
+                  }
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Upgrade Latest Version: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("title: ${state.latest!.title}"),
+                      Text("description: ${state.latest!.description}"),
+                      Text("releaseNotes: ${state.latest!.releaseNotes}"),
+                      Text("version: ${state.latest!.version.toString()}"),
+                      Text("displayVersionString: ${state.latest!.displayVersionString}"),
+                      Text("os: ${state.latest!.os}"),
+                      Text("minimumSystemVersion: ${state.latest!.minimumSystemVersion}"),
+                      Text("maximumSystemVersion: ${state.latest!.maximumSystemVersion}"),
+                      Text("fileURL: ${state.latest!.fileURL}"),
+                    ],
+                  );
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () => UpgradeManager.instance.checkForUpdates(),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                      child: Text("Check for Updates"),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    child: DefaultUpgradeStatusIndicator(),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
