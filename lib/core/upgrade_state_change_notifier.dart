@@ -28,7 +28,6 @@ class UpgradeStateChangeNotifier extends ChangeNotifier {
 
   void checkAvailable() {
     if (current != null && latest != null && latest! > current!) {
-      debugPrint('available');
       updateUpgradeStatus(status: UpgradeStatus.available);
     }
   }

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:upgrade/core/upgrade_state_change_notifier.dart';
 import 'package:upgrade/default/default_file_location.dart';
+import 'package:upgrade/default/default_upgrade_dialog.dart';
 import 'package:upgrade/models/appcast.dart';
 import 'package:upgrade/models/upgrade_status.dart';
 
@@ -33,8 +34,6 @@ class UpgradeManager {
 
   /// If true, the app will be closed when the installer is launched.
   late final bool _closeOnInstalling;
-
-
 
   init({
     required String url,
@@ -70,14 +69,18 @@ class UpgradeManager {
   }
 
   void download({
-    required String url,
+    String? url,
     File? file,
     void Function(int received, int total, bool done)? onReceiveProgress,
     void Function()? done,
   }) async {
     if (status != UpgradeStatus.available) { return; }
+    if (state.latest!.fileURL == null) {
+      debugPrint("[UpgradeManager] There is no latest version download url in latest config file.");
+      return;
+    }
 
-    final uri = Uri.parse(url);
+    final uri = Uri.parse(url ?? state.latest!.fileURL!);
 
     _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.downloading);
 
@@ -86,14 +89,14 @@ class UpgradeManager {
 
     List<int> buffer = [];
 
-    response.stream.listen(
-          (List<int> bytes) {
+    response.stream.listen((List<int> bytes) {
         buffer.addAll(bytes);
         onReceiveProgress?.call(buffer.length, contentLength, false);
       },
       onDone: () async {
         file ??= await defaultFileLocation(uri.pathSegments.last);
         await file!.writeAsBytes(buffer);
+        debugPrint(file!.path);
         onReceiveProgress?.call(contentLength, contentLength, true);
         _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.readyToInstall);
         done?.call();
@@ -107,11 +110,21 @@ class UpgradeManager {
   }
 
   void showUpgradeDialog({ required BuildContext context, Widget? dialog }) {
+    if (status != UpgradeStatus.readyToInstall) { return; }
 
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog ?? const DefaultUpgradeDialog();
+      },
+    );
   }
 
   void install() {
 
+    if (_closeOnInstalling) {
+      if (Platform.isAndroid) { SystemNavigator.pop(); } else { exit(0); }
+    }
   }
 
   void dismiss() {
