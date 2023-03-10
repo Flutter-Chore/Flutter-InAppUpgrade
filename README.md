@@ -7,7 +7,7 @@ A Flutter plugin for prompting and help users to upgrade when there is a newer v
 You should set below attributes in *.entitlements
 ```xml
 <dict>
-    // ...
+    <!--other attributes-->
 	<key>com.apple.security.network.client</key>
     <true/>
 	<key>com.apple.security.files.downloads.read-write</key>
