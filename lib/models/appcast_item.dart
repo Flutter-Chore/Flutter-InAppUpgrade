@@ -14,7 +14,6 @@ class AppcastItem {
   final String? minimumSystemVersion;
   final String? maximumSystemVersion;
   final String? fileURL;
-  final int? contentLength;
 
   AppcastItem({
     this.title,
@@ -27,13 +26,17 @@ class AppcastItem {
     this.minimumSystemVersion,
     this.maximumSystemVersion,
     this.fileURL,
-    this.contentLength,
   });
 
   bool isSupportingHost() => os?.name == Platform.operatingSystem;
 
   bool operator>(AppcastItem item) {
     if (version > item.version) { return true; }
+    return false;
+  }
+
+  bool operator<=(AppcastItem item) {
+    if (version <= item.version) { return true; }
     return false;
   }
 
@@ -57,7 +60,6 @@ class AppcastItem {
       minimumSystemVersion: json['minimumSystemVersion'],
       maximumSystemVersion: json['maximumSystemVersion'],
       fileURL: json['fileURL'],
-      contentLength: json['contentLength'],
     );
   }
 }

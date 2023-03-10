@@ -7,8 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:upgrade/core/upgrade_state_change_notifier.dart';
 import 'package:upgrade/default/default_file_location.dart';
+import 'package:upgrade/default/default_upgrade_dialog.dart';
 import 'package:upgrade/models/appcast.dart';
 import 'package:upgrade/models/upgrade_status.dart';
+import 'package:upgrade/utils/installer.dart';
 
 class UpgradeManager {
 
@@ -24,9 +26,6 @@ class UpgradeManager {
   UpgradeStateChangeNotifier get state => _stateChangeNotifier;
   UpgradeStatus get status => _stateChangeNotifier.status;
 
-  /// The name of the app.
-  late final String _appName;
-
   /// The upgrade appcast file url.
   late final String _url;
 
@@ -36,15 +35,13 @@ class UpgradeManager {
   /// If true, the app will be closed when the installer is launched.
   late final bool _closeOnInstalling;
 
-
+  String? _filePath;
 
   init({
-    required String appName,
     required String url,
     required String currentVersionPath,
     bool closeOnInstalling = true,
   }) {
-    _appName = appName;
     _url = url;
     _currentVersionPath = currentVersionPath;
     _closeOnInstalling = closeOnInstalling;
@@ -64,7 +61,7 @@ class UpgradeManager {
       return;
     }
 
-    final appcast = Appcast.fromJson(json.decode(response.body));
+    final appcast = Appcast.fromJson(List<Map<String, dynamic>>.from(json.decode(response.body)));
     final best = appcast.best();
     if (best != null) {
       _stateChangeNotifier.updateLatestVersion(version: best);
@@ -74,14 +71,18 @@ class UpgradeManager {
   }
 
   void download({
-    required String url,
+    String? url,
     File? file,
     void Function(int received, int total, bool done)? onReceiveProgress,
     void Function()? done,
   }) async {
     if (status != UpgradeStatus.available) { return; }
+    if (state.latest!.fileURL == null) {
+      debugPrint("[UpgradeManager] There is no latest version download url in latest config file.");
+      return;
+    }
 
-    final uri = Uri.parse(url);
+    final uri = Uri.parse(url ?? state.latest!.fileURL!);
 
     _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.downloading);
 
@@ -90,32 +91,54 @@ class UpgradeManager {
 
     List<int> buffer = [];
 
-    response.stream.listen(
-          (List<int> bytes) {
+    response.stream.listen((List<int> bytes) {
         buffer.addAll(bytes);
         onReceiveProgress?.call(buffer.length, contentLength, false);
       },
       onDone: () async {
         file ??= await defaultFileLocation(uri.pathSegments.last);
         await file!.writeAsBytes(buffer);
+        _filePath = file!.absolute.path;
         onReceiveProgress?.call(contentLength, contentLength, true);
         _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.readyToInstall);
         done?.call();
       },
       onError: (e) {
         _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.error);
-        debugPrint("UpgradeManager: Downloading Error: ${e.toString()}");
+        debugPrint("[UpgradeManager] Downloading Error: ${e.toString()}");
       },
       cancelOnError: true,
     );
   }
 
-  void showInstaller() {
+  void showUpgradeDialog({ required BuildContext context, Widget? dialog }) {
+    if (status != UpgradeStatus.readyToInstall) { return; }
 
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog ?? const DefaultUpgradeDialog();
+      },
+    );
   }
 
-  void install() {
+  Future<void> install() async {
+    if (status != UpgradeStatus.readyToInstall) { return; }
+    if (_filePath == null) {
+      _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.error);
+      debugPrint("[UpgradeManager] There no install file.");
+      return;
+    }
 
+    _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.installing);
+    final file = File(_filePath!);
+    await Installer.open(file: file, onError: () {
+      _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.error);
+    });
+
+    if (status == UpgradeStatus.installing && _closeOnInstalling) {
+      if (Platform.isAndroid) { SystemNavigator.pop(); } else { exit(0); }
+    }
   }
 
   void dismiss() {
@@ -132,10 +155,10 @@ class UpgradeManager {
 
   void _loadCurrentVersion() {
     rootBundle.loadString(_currentVersionPath).then((value) {
-      final appcast = Appcast.fromJson(json.decode(value));
+      final appcast = Appcast.fromJson(List<Map<String, dynamic>>.from(json.decode(value)));
       _stateChangeNotifier.updateCurrentVersion(version: appcast.best()!);
-    }).catchError((_) {
-      debugPrint("[UpgradeManager] Cannot load current version info from path: $_currentVersionPath");
+    }).catchError((err) {
+      debugPrint("[UpgradeManager] Cannot load current version info from path: $_currentVersionPath, with error: ${err.toString()}");
       if (Platform.isAndroid) { SystemNavigator.pop(); } else { exit(0); }
     });
   }

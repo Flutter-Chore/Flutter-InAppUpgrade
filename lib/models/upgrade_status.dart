@@ -6,6 +6,7 @@ enum UpgradeStatus {
   upToDate,
   downloading,
   readyToInstall,
+  installing,
   error,
   dismissed,
 }
