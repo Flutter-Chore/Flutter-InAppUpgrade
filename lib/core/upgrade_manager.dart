@@ -10,6 +10,7 @@ import 'package:upgrade/default/default_file_location.dart';
 import 'package:upgrade/default/default_upgrade_dialog.dart';
 import 'package:upgrade/models/appcast.dart';
 import 'package:upgrade/models/upgrade_status.dart';
+import 'package:upgrade/utils/installer.dart';
 
 class UpgradeManager {
 
@@ -25,7 +26,6 @@ class UpgradeManager {
   UpgradeStateChangeNotifier get state => _stateChangeNotifier;
   UpgradeStatus get status => _stateChangeNotifier.status;
 
-
   /// The upgrade appcast file url.
   late final String _url;
 
@@ -34,6 +34,8 @@ class UpgradeManager {
 
   /// If true, the app will be closed when the installer is launched.
   late final bool _closeOnInstalling;
+
+  String? _filePath;
 
   init({
     required String url,
@@ -96,14 +98,14 @@ class UpgradeManager {
       onDone: () async {
         file ??= await defaultFileLocation(uri.pathSegments.last);
         await file!.writeAsBytes(buffer);
-        debugPrint(file!.path);
+        _filePath = file!.absolute.path;
         onReceiveProgress?.call(contentLength, contentLength, true);
         _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.readyToInstall);
         done?.call();
       },
       onError: (e) {
         _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.error);
-        debugPrint("UpgradeManager: Downloading Error: ${e.toString()}");
+        debugPrint("[UpgradeManager] Downloading Error: ${e.toString()}");
       },
       cancelOnError: true,
     );
@@ -120,9 +122,21 @@ class UpgradeManager {
     );
   }
 
-  void install() {
+  Future<void> install() async {
+    if (status != UpgradeStatus.readyToInstall) { return; }
+    if (_filePath == null) {
+      _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.error);
+      debugPrint("[UpgradeManager] There no install file.");
+      return;
+    }
 
-    if (_closeOnInstalling) {
+    _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.installing);
+    final file = File(_filePath!);
+    await Installer.open(file: file, onError: () {
+      _stateChangeNotifier.updateUpgradeStatus(status: UpgradeStatus.error);
+    });
+
+    if (status == UpgradeStatus.installing && _closeOnInstalling) {
       if (Platform.isAndroid) { SystemNavigator.pop(); } else { exit(0); }
     }
   }

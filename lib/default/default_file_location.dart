@@ -8,5 +8,5 @@ import 'package:path_provider/path_provider.dart';
 /// This method is using the path_provider package to get that location.
 Future<File> defaultFileLocation(String filename) async {
   final dir = await getTemporaryDirectory();
-  return File("${dir.path}/$filename");
+  return File("${dir.absolute.path}/$filename");
 }
