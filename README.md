@@ -8,9 +8,9 @@ You should set below attributes in *.entitlements
 ```xml
 <dict>
     <!--other attributes-->
-	<key>com.apple.security.network.client</key>
+    <key>com.apple.security.network.client</key>
     <true/>
-	<key>com.apple.security.files.downloads.read-write</key>
-	<true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
 </dict>
 ```
