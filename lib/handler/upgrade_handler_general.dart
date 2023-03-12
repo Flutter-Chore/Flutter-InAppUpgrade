@@ -11,7 +11,7 @@ class GeneralUpgradeHandler extends UpgradeHandler {
   GeneralUpgradeHandler.init({required super.state}) : super.init();
 
   @override
-  void install(String? filePath, bool closeOnInstalling) async {
+  void install({ String? filePath, required bool closeOnInstalling }) async {
     if (status != UpgradeStatus.readyToInstall) { return; }
     if (filePath == null) {
       state.updateUpgradeStatus(status: UpgradeStatus.error);
@@ -20,7 +20,7 @@ class GeneralUpgradeHandler extends UpgradeHandler {
     }
 
     state.updateUpgradeStatus(status: UpgradeStatus.installing);
-    final file = File(filePath!);
+    final file = File(filePath);
     await Installer.open(file: file, onError: () {
       state.updateUpgradeStatus(status: UpgradeStatus.error);
     });

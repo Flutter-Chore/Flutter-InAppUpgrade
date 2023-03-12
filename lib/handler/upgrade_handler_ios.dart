@@ -1,19 +1,23 @@
 
-import 'package:flutter/material.dart';
+import 'dart:io';
+
 import 'package:upgrade/handler/upgrade_handler_interface.dart';
 
 class IosUpgradeHandler extends UpgradeHandler {
   IosUpgradeHandler.init({required super.state}) : super.init();
 
   @override
-  void install(String? filePath, bool closeOnInstalling) {
-    // TODO: implement install
-  }
+  void download({
+    String? url,
+    File? file,
+    void Function(int received, int total, bool done)? onReceiveProgress,
+    void Function(String filePath)? onDone}) {}
 
   @override
-  void showUpgradeDialog({required BuildContext context, Widget? dialog}) {
-    // TODO: implement showUpgradeDialog
+  void install({ String? filePath, required bool closeOnInstalling }) {
+
   }
+
 
 
 }

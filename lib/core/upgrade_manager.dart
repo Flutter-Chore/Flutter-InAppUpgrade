@@ -87,7 +87,7 @@ class UpgradeManager {
   }
 
   Future<void> install() async {
-    _handler.install(_filePath, _closeOnInstalling);
+    _handler.install(filePath: _filePath, closeOnInstalling: _closeOnInstalling);
   }
 
   void dismiss() {
