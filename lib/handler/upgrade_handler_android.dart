@@ -5,7 +5,7 @@ class AndroidUpgradeHandler extends UpgradeHandler {
   AndroidUpgradeHandler.init({required super.state}) : super.init();
 
   @override
-  void install({ String? filePath, required bool closeOnInstalling }) {
+  void install({ required Map<String, dynamic> params }) {
 
   }
 

@@ -89,10 +89,9 @@ abstract class UpgradeHandler {
     );
   }
 
-  void install({ String? filePath, required bool closeOnInstalling });
+  void install({ required Map<String, dynamic> params });
 
   void dismiss() {
     state.updateUpgradeStatus(status: UpgradeStatus.dismissed);
   }
 }
-

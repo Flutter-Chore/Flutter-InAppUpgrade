@@ -11,7 +11,10 @@ class GeneralUpgradeHandler extends UpgradeHandler {
   GeneralUpgradeHandler.init({required super.state}) : super.init();
 
   @override
-  void install({ String? filePath, required bool closeOnInstalling }) async {
+  void install({ required Map<String, dynamic> params }) async {
+    final String? filePath = params['filePath'];
+    final bool closeOnInstalling = params['closeOnInstalling'];
+
     if (status != UpgradeStatus.readyToInstall) { return; }
     if (filePath == null) {
       state.updateUpgradeStatus(status: UpgradeStatus.error);

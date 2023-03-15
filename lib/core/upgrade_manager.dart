@@ -42,6 +42,8 @@ class UpgradeManager {
   /// The upgrade appcast file url.
   late final String _url;
 
+  late final Map<String, dynamic> _iosConfig;
+
   /// If true, the app will be closed when the installer is launched.
   late final bool _closeOnInstalling;
 
@@ -50,9 +52,11 @@ class UpgradeManager {
   init({
     required String url,
     required String currentVersionPath,
+    required Map<String, dynamic> iosConfig,
     bool closeOnInstalling = true,
   }) {
     _url = url;
+    _iosConfig = iosConfig;
     _closeOnInstalling = closeOnInstalling;
 
     CurrentVersionManager.load(currentVersionPath, (version) {
@@ -87,7 +91,22 @@ class UpgradeManager {
   }
 
   Future<void> install() async {
-    _handler.install(filePath: _filePath, closeOnInstalling: _closeOnInstalling);
+    switch (Platform.operatingSystem) {
+      case 'ios':
+        _handler.install(params: _iosConfig);
+        break;
+      case 'android':
+        break;
+      case 'macos':
+      case 'linux':
+      case 'windows':
+      default:
+        _handler.install(params: {
+          "filePath": _filePath,
+          "closeOnInstalling": _closeOnInstalling,
+        });
+        break;
+    }
   }
 
   void dismiss() {
