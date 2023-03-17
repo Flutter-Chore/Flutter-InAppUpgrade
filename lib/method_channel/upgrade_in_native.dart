@@ -13,4 +13,8 @@ class UpgradeInNative {
   static Future<FlutterError?> openAppStoreInApp(String appId) async {
     return methodChannel.invokeMethod("openAppStoreInApp", { "appId": appId });
   }
+
+  static Future<FlutterError?> installApk(String filePath) async {
+    return methodChannel.invokeMethod("installApk", { "filePath": filePath });
+  }
 }

@@ -96,6 +96,9 @@ class UpgradeManager {
         _handler.install(params: _iosConfig);
         break;
       case 'android':
+        _handler.install(params: {
+          "filePath": _filePath,
+        });
         break;
       case 'macos':
       case 'linux':
