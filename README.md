@@ -32,6 +32,8 @@ A Flutter plugin for prompting and help users to upgrade when there is a newer v
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="your.package">
     <!--other attributes-->
+
+    <!--(if you want to upload google store,can not add this permission)-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
