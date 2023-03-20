@@ -1,7 +1,6 @@
 package io.verse.upgrade
 
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -16,7 +15,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
 import java.io.File
 
 /**
@@ -37,10 +35,6 @@ class UpgradePlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var activity: Activity
 
   private lateinit var filePath: String
-
-  companion object {
-    private const val REQUEST_CODE_UNKNOWN_APP_SOURCES: Int = 0x8088
-  }
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "io.verse.upgrade/in_app_upgrade")
@@ -72,6 +66,7 @@ class UpgradePlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         filePath = call.argument<String>("filePath")!!
         installApk()
       }
+      "openAppMarket" -> {}
       else -> result.notImplemented()
     }
   }

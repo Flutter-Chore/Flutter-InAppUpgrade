@@ -1,12 +1,12 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:upgrade/core/upgrade_state_change_notifier.dart';
 import 'package:upgrade/handler/upgrade_handler_android.dart';
 import 'package:upgrade/handler/upgrade_handler_general.dart';
 import 'package:upgrade/handler/upgrade_handler_interface.dart';
 import 'package:upgrade/handler/upgrade_handler_ios.dart';
+import 'package:upgrade/handler/upgrade_handler_macos.dart';
 import 'package:upgrade/models/upgrade_status.dart';
 import 'package:upgrade/utils/current_version_manager.dart';
 
@@ -31,6 +31,7 @@ class UpgradeManager {
       case 'android':
         return AndroidUpgradeHandler.init(state: _stateChangeNotifier);
       case 'macos':
+        return MacOSUpgradeHandler.init(state: _stateChangeNotifier);
       case 'linux':
       case 'windows':
       default:
@@ -83,11 +84,6 @@ class UpgradeManager {
         onDone?.call();
       },
     );
-
-  }
-
-  void showUpgradeDialog({ required BuildContext context, Widget? dialog }) {
-    _handler.showUpgradeDialog(context: context, dialog: dialog);
   }
 
   Future<void> install() async {
@@ -101,6 +97,10 @@ class UpgradeManager {
         });
         break;
       case 'macos':
+        _handler.install(params: {
+          "appId": "1233593954",
+        });
+        break;
       case 'linux':
       case 'windows':
       default:

@@ -4,20 +4,17 @@ import 'dart:io';
 import 'package:version/version.dart';
 
 class AppcastItem {
-  final String? title;
-  final String? description;
-  final String? releaseNotes;
+  final dynamic releaseNotes;
   final DateTime? date;
   final Version version;
   final String? displayVersionString;
   final OS? os;
   final String? minimumSystemVersion;
   final String? maximumSystemVersion;
+  final List<String>? priorities;
   final String? fileURL;
 
   AppcastItem({
-    this.title,
-    this.description,
     this.releaseNotes,
     this.date,
     required this.version,
@@ -25,6 +22,7 @@ class AppcastItem {
     this.os,
     this.minimumSystemVersion,
     this.maximumSystemVersion,
+    this.priorities,
     this.fileURL,
   });
 
@@ -42,8 +40,6 @@ class AppcastItem {
 
   factory AppcastItem.fromJson(Map<String, dynamic> json) {
     return AppcastItem(
-      title: json['title'],
-      description: json['description'],
       releaseNotes: json['releaseNotes'],
       date: json['date'] != null ? DateTime.fromMillisecondsSinceEpoch(json['date'] as int) : null,
       version: json['version'] is String
@@ -59,6 +55,7 @@ class AppcastItem {
       os: json['os'] != null ? OS.get(json['os']) : null,
       minimumSystemVersion: json['minimumSystemVersion'],
       maximumSystemVersion: json['maximumSystemVersion'],
+      priorities: json['priorities']?.cast<String>(),
       fileURL: json['fileURL'],
     );
   }

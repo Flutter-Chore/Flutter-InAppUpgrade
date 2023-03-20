@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:upgrade/core/upgrade_state_change_notifier.dart';
 import 'package:upgrade/default/default_file_location.dart';
-import 'package:upgrade/default/default_upgrade_dialog.dart';
 import 'package:upgrade/models/appcast.dart';
 import 'package:upgrade/models/upgrade_status.dart';
 
@@ -38,15 +37,6 @@ abstract class UpgradeHandler {
     } else {
       state.updateUpgradeStatus(status: UpgradeStatus.upToDate);
     }
-  }
-
-  void showUpgradeDialog({ required BuildContext context, Widget? dialog }) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return dialog ?? const DefaultUpgradeDialog();
-      },
-    );
   }
 
   void download({

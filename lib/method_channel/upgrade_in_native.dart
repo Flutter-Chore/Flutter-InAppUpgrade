@@ -14,7 +14,13 @@ class UpgradeInNative {
     return methodChannel.invokeMethod("openAppStoreInApp", { "appId": appId });
   }
 
+  /// Only for android, should check platform before use.
   static Future<FlutterError?> installApk(String filePath) async {
     return methodChannel.invokeMethod("installApk", { "filePath": filePath });
+  }
+
+  /// Only for android, should check platform before use.
+  static Future<FlutterError?> openAppMarket() async {
+    return methodChannel.invokeMethod("openAppMarket");
   }
 }
