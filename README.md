@@ -3,15 +3,19 @@
 A Flutter plugin for prompting and help users to upgrade when there is a newer version of this app in the store or repository.
 
 ## Platform Support
-|Platform|App Store|In App Upgrade|Third-party App Store|
+|Platform|Open App Store|Download/Install Installer|Third-party App Store|
 |:---:|---|---|---|
 |iOS|✅Yes|❌No||
 |android|✅Yes|✅Yes||
-|macOS|❌No|✅Yes||
+|macOS|✅Yes|✅Yes||
 |linux|❌No|✅Yes||
 |windows|❌No|✅Yes||
 
-## How to Use
+## ⚠️ Disclaimer
+
+## How it work?
+
+## How to use it?
 
 ## Config Before Use
 
