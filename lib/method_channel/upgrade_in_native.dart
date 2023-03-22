@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-
-
+import 'package:upgrade/models/app_market.dart';
 
 /// An implementation of [UpgradePlatform] that uses method channels.
 class UpgradeInNative {
@@ -20,7 +19,7 @@ class UpgradeInNative {
   }
 
   /// Only for android, should check platform before use.
-  static Future<FlutterError?> openAppMarket() async {
-    return methodChannel.invokeMethod("openAppMarket");
+  static Future<FlutterError?> openAppMarket({ AppMarket market = AppMarket.official }) async {
+    return methodChannel.invokeMethod("openAppMarket", { "market": market.name });
   }
 }

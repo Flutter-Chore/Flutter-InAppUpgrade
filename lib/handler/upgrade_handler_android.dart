@@ -8,10 +8,14 @@ class AndroidUpgradeHandler extends UpgradeHandler {
 
   @override
   void install({ required Map<String, dynamic> params }) {
+    /*
     final String filePath = params["filePath"];
 
     state.updateUpgradeStatus(status: UpgradeStatus.installing);
     UpgradeInNative.installApk(filePath);
+    */
+
+     UpgradeInNative.openAppMarket();
   }
 
 }
