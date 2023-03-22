@@ -115,6 +115,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text("Download"),
                   ),
                 ),
+                /*
                 GestureDetector(
                   onTap: () => UpgradeManager.instance.showUpgradeDialog(context: context),
                   child: const Padding(
@@ -122,6 +123,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text("Show Upgrade Dialog"),
                   ),
                 ),
+                */
                 GestureDetector(
                   onTap: () => UpgradeManager.instance.install(),
                   child: const Padding(
@@ -146,8 +148,6 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("$title: ", style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text("title: ${item.title}"),
-        Text("description: ${item.description}"),
         Text("releaseNotes: ${item.releaseNotes}"),
         Text("version: ${item.version.toString()}"),
         Text("displayVersionString: ${item.displayVersionString}"),

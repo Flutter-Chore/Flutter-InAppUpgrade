@@ -14,5 +14,13 @@
     "version": "0.3.1-beta+20130313144700",
     "os": "ios",
     "fileURL": "http://localhost:8000/noob.zip"
+  },
+  {
+    "name": "Flutter-InAppUpgrade",
+    "description": "this is Flutter-InAppUpgrade local example app",
+    "releaseNotes": "\n1. \n2. \n3.",
+    "version": "0.3.1-beta+20130313144700",
+    "os": "android",
+    "fileURL": "http://localhost:8000/noob.zip"
   }
 ]
