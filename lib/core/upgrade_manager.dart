@@ -1,12 +1,12 @@
 
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
+import 'package:upgrade/core/installer.dart';
 import 'package:upgrade/core/upgrade_state_change_notifier.dart';
-import 'package:upgrade/handler/upgrade_handler_android.dart';
-import 'package:upgrade/handler/upgrade_handler_general.dart';
-import 'package:upgrade/handler/upgrade_handler_interface.dart';
-import 'package:upgrade/handler/upgrade_handler_ios.dart';
-import 'package:upgrade/handler/upgrade_handler_macos.dart';
+import 'package:upgrade/models/appcast.dart';
 import 'package:upgrade/models/upgrade_status.dart';
 import 'package:upgrade/utils/current_version_manager.dart';
 
@@ -20,45 +20,27 @@ class UpgradeManager {
     return _instance!;
   }
 
+  final Map<String, InstallInitializer> _installInitializers = {};
+
   final UpgradeStateChangeNotifier _stateChangeNotifier = UpgradeStateChangeNotifier();
   UpgradeStateChangeNotifier get state => _stateChangeNotifier;
-  UpgradeStatus get status => _stateChangeNotifier.status;
+  UpgradeStatus get status => state.status;
+  Iterator<Installer?>? _installers;
 
-  late final UpgradeHandler _handler = (() {
-    switch (Platform.operatingSystem) {
-      case 'ios':
-        return IosUpgradeHandler.init(state: _stateChangeNotifier);
-      case 'android':
-        return AndroidUpgradeHandler.init(state: _stateChangeNotifier);
-      case 'macos':
-        return MacOSUpgradeHandler.init(state: _stateChangeNotifier);
-      case 'linux':
-      case 'windows':
-      default:
-        return GeneralUpgradeHandler.init(state: _stateChangeNotifier);
-    }
-  })();
-
+  Installer? get installer => _installers?.current;
 
   /// The upgrade appcast file url.
   late final String _url;
 
-  late final Map<String, dynamic> _iosConfig;
-
-  /// If true, the app will be closed when the installer is launched.
-  late final bool _closeOnInstalling;
-
-  String? _filePath;
-
   init({
     required String url,
     required String currentVersionPath,
-    required Map<String, dynamic> iosConfig,
-    bool closeOnInstalling = true,
+    List<InstallInitializer> customInstallInitializers = const [],
   }) {
     _url = url;
-    _iosConfig = iosConfig;
-    _closeOnInstalling = closeOnInstalling;
+
+    _installInitializers.addAll({ for (var item in SystemInstaller.initializers) item.identifier: item });
+    _installInitializers.addAll({ for (var item in customInstallInitializers) item.identifier: item });
 
     CurrentVersionManager.load(currentVersionPath, (version) {
       state.updateCurrentVersion(version: version);
@@ -66,54 +48,49 @@ class UpgradeManager {
   }
 
   void checkForUpdates() async {
-    _handler.checkForUpdates(url: _url);
+    state.updateUpgradeStatus(status: UpgradeStatus.checking);
+
+    final uri = Uri.parse(_url);
+    final response = await Client().get(uri, headers: {'Content-Type': 'application/json;charset=utf-8'});
+    if (response.statusCode != 200) {
+      state.updateUpgradeStatus(status: UpgradeStatus.error);
+      debugPrint("[UpgradeManager] Download Appcast from $_url error.");
+      return;
+    }
+
+    final appcast = Appcast.fromJson(List<Map<String, dynamic>>.from(json.decode(response.body)));
+    final best = appcast.best();
+    if (best != null) {
+      state.updateLatestVersion(version: best);
+      initInstallers();
+      nextInstaller();
+    } else {
+      state.updateUpgradeStatus(status: UpgradeStatus.upToDate);
+    }
   }
 
   void download({
     String? url,
     File? file,
-    void Function(int received, int total, bool done)? onReceiveProgress,
+    void Function(int received, int total, bool failed)? onReceiveProgress,
     void Function()? onDone,
-  }) async {
-    _handler.download(
+  }) {
+    if (installer == null || !installer!.hasDownload()) { return; }
+    installer?.download(
       url: url,
       file: file,
       onReceiveProgress: onReceiveProgress,
-      onDone: (path) {
-        _filePath = path;
-        onDone?.call();
-      },
+      onDone: onDone,
     );
   }
 
-  Future<void> install() async {
-    switch (Platform.operatingSystem) {
-      case 'ios':
-        _handler.install(params: _iosConfig);
-        break;
-      case 'android':
-        _handler.install(params: {
-          "filePath": _filePath,
-        });
-        break;
-      case 'macos':
-        _handler.install(params: {
-          "appId": "1233593954",
-        });
-        break;
-      case 'linux':
-      case 'windows':
-      default:
-        _handler.install(params: {
-          "filePath": _filePath,
-          "closeOnInstalling": _closeOnInstalling,
-        });
-        break;
-    }
+  Future<bool> install() async {
+    if (installer == null) { return false; }
+    return await installer!.install();
   }
 
   void dismiss() {
-    _handler.dismiss();
+    state.updateUpgradeStatus(status: UpgradeStatus.dismissed);
   }
 
   void addListener(void Function() listener) {
@@ -122,6 +99,17 @@ class UpgradeManager {
 
   void removeListener(void Function() listener) {
     _stateChangeNotifier.removeListener(listener);
+  }
+
+  void initInstallers() {
+    if (status != UpgradeStatus.available) { return; }
+
+    _installers = state.latest?.installer(
+        state: _stateChangeNotifier, initializers: _installInitializers).iterator;
+  }
+
+  bool nextInstaller() {
+    return _installers?.moveNext() ?? false;
   }
 
 }
