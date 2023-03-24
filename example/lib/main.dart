@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:upgrade/core/custom_upgrade_view.dart';
+import 'package:upgrade/core/custom_upgrade_status_indicator.dart';
+import 'package:upgrade/core/installer.dart';
 import 'package:upgrade/core/upgrade_manager.dart';
-import 'package:upgrade/default/default_upgrade_status_indicator.dart';
 import 'package:upgrade/models/appcast_item.dart';
+import 'package:upgrade/models/upgrade_status.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,10 +38,6 @@ class _HomePageState extends State<HomePage> {
     UpgradeManager.instance.init(
       url: "http://192.168.1.3:8000/appcast/latest",
       currentVersionPath: "assets/version/version.json",
-      iosConfig: {
-        'appId': '1142110895',
-        'inApp': true,
-      },
     );
   }
 
@@ -65,11 +63,15 @@ class _HomePageState extends State<HomePage> {
               builder: (context, state) => _buildAppcastItemInfo(title: "Upgrade Latest Version", item: state.latest),
             ),
           ),
-          const Align(
+          Align(
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-              child: DefaultUpgradeStatusIndicator(),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              child: CustomUpgradeStatusIndicator(
+                builder: (context, status) {
+                  return Text(status.name);
+                },
+              ),
             ),
           ),
           Align(
@@ -154,7 +156,6 @@ class _HomePageState extends State<HomePage> {
         Text("os: ${item.os}"),
         Text("minimumSystemVersion: ${item.minimumSystemVersion}"),
         Text("maximumSystemVersion: ${item.maximumSystemVersion}"),
-        Text("fileURL: ${item.fileURL}"),
       ],
     );
   }

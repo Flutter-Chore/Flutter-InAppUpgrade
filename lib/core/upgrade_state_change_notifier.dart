@@ -16,17 +16,21 @@ class UpgradeStateChangeNotifier extends ChangeNotifier {
 
   void updateLatestVersion({ required AppcastItem version }) {
     latest = version;
-    checkAvailable();
+    _checkAvailable();
     notifyListeners();
   }
 
   void updateCurrentVersion({ required AppcastItem version }) {
     current = version;
-    checkAvailable();
+    _checkAvailable();
     notifyListeners();
   }
 
-  void checkAvailable() {
+  bool currentStatusIs({ required UpgradeStatus status }) {
+    return this.status == status;
+  }
+
+  void _checkAvailable() {
     if (current != null && latest != null && latest! > current!) {
       updateUpgradeStatus(status: UpgradeStatus.available);
     }

@@ -2,25 +2,38 @@
   {
     "name": "Flutter-InAppUpgrade",
     "description": "this is Flutter-InAppUpgrade local example app",
-    "releaseNotes": "\n1. \n2. \n3.",
+    "release_notes": "\n1. \n2. \n3.",
     "version": "0.3.1-beta+20130313144700",
     "os": "macos",
-    "fileURL": "http://localhost:8000/noob.zip"
+    "installers": [{
+      "initializer": "macos_app_store",
+      "app_id": "1233593954"
+    }, {
+      "initializer": "file",
+      "file_url": "http://localhost:8000/download/flutter-inappupgrade-v0.3.2-beta.dmg"
+    }]
   },
   {
     "name": "Flutter-InAppUpgrade",
     "description": "this is Flutter-InAppUpgrade local example app",
-    "releaseNotes": "\n1. \n2. \n3.",
+    "release_notes": "\n1. \n2. \n3.",
     "version": "0.3.1-beta+20130313144700",
     "os": "ios",
-    "fileURL": "http://localhost:8000/noob.zip"
+    "installers": [{
+      "initializer": "ios_app_store",
+      "app_id": "",
+      "in_app": false
+    }]
   },
   {
     "name": "Flutter-InAppUpgrade",
     "description": "this is Flutter-InAppUpgrade local example app",
-    "releaseNotes": "\n1. \n2. \n3.",
+    "release_notes": "\n1. \n2. \n3.",
     "version": "0.3.1-beta+20130313144700",
     "os": "android",
-    "fileURL": "http://localhost:8000/noob.zip"
+    "installers": [{
+      "initializer": "android_app_market",
+      "market": "official"
+    }]
   }
 ]
