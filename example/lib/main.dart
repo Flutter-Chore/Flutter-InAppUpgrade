@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:upgrade/core/custom_upgrade_view.dart';
 import 'package:upgrade/core/custom_upgrade_status_indicator.dart';
-import 'package:upgrade/core/installer.dart';
 import 'package:upgrade/core/upgrade_manager.dart';
 import 'package:upgrade/models/appcast_item.dart';
-import 'package:upgrade/models/upgrade_status.dart';
 
 void main() {
   runApp(const MyApp());
