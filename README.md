@@ -1,12 +1,12 @@
 # In App Upgrade
 
-A Flutter plugin for prompting and help users to upgrade when there is a newer version of this app in the store or repository.
+A Flutter plugin for prompting and help users to upgrade when there is a newer version of this app in the app store or server repository.
 
 ## Platform Support
 |Platform|Open App Store|Download/Install Installer|Third-party App Store|
 |:---:|---|---|---|
 |iOS|✅Yes|❌No||
-|android|✅Yes|✅Yes||
+|android|✅Yes|✅Yes|Google Play, 酷安, 应用宝, 百度手机助手, 360手机助手, 豌豆荚|
 |macOS|✅Yes|✅Yes||
 |linux|❌No|✅Yes||
 |windows|❌No|✅Yes||
@@ -15,7 +15,7 @@ A Flutter plugin for prompting and help users to upgrade when there is a newer v
 
 ## How it work?
 
-## How to use it?
+## How to use?
 
 ## Config Before Use
 

@@ -1,7 +1,8 @@
 name: upgrade
-description: A new Flutter project.
+description: A Flutter plugin for prompting and help users to upgrade when there is a newer version of this app in the app store or server repository.
 version: 0.0.1
-homepage:
+
+homepage: https://github.com/Flutter-Chore/Flutter-InAppUpgrade
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
