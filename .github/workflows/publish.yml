@@ -1,0 +1,11 @@
+
+name: Publish to Pub.dev
+
+on:
+  push:
+    tags:
+      - 'upgrade-[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  publish:
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
