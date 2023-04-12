@@ -1,5 +1,5 @@
 
-name: Publish to Pub.dev
+name: Publish to pub.dev
 
 on:
   push:
