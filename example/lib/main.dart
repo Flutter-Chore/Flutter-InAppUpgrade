@@ -111,15 +111,6 @@ class _HomePageState extends State<HomePage> {
                     child: Text("Download"),
                   ),
                 ),
-                /*
-                GestureDetector(
-                  onTap: () => UpgradeManager.instance.showUpgradeDialog(context: context),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                    child: Text("Show Upgrade Dialog"),
-                  ),
-                ),
-                */
                 GestureDetector(
                   onTap: () => UpgradeManager.instance.install(),
                   child: const Padding(
