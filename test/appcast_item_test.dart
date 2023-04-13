@@ -12,7 +12,11 @@ void main() {
     {
       "date": ${time.millisecondsSinceEpoch},
       "version": "1.9.8-beta+nvidia",
-      "os": "android"
+      "os": "android",
+      "installers": [{
+        "initializer": "android_app_market",
+        "market": "official"
+      }]
     }
     ''';
 
