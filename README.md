@@ -2,7 +2,9 @@
 
 A Flutter plugin for prompting and help users to upgrade when there is a newer version of this app in the app store or server repository.
 
-## Platform Support
+## <font color=yellow>⚠ Disclaimer</font>
+
+## Supported Platform
 |Platform|Open App Store|Download/Install Installer|Third-party App Store|
 |:---:|---|---|---|
 |iOS|✅Yes|❌No||
@@ -11,7 +13,9 @@ A Flutter plugin for prompting and help users to upgrade when there is a newer v
 |linux|❌No|✅Yes||
 |windows|❌No|✅Yes||
 
-## ⚠️ Disclaimer
+## Tabel of Contents
+
+- [Supported Platform](#supported-platform)
 
 ## How it work?
 
