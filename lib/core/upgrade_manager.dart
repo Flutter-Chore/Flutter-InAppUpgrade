@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 import 'package:upgrade/core/installer.dart';
 import 'package:upgrade/core/upgrade_state_change_notifier.dart';
 import 'package:upgrade/models/appcast.dart';
+import 'package:upgrade/models/appcast_item.dart';
 import 'package:upgrade/models/upgrade_status.dart';
 import 'package:upgrade/utils/current_version_manager.dart';
 
@@ -25,14 +26,16 @@ class UpgradeManager {
   final UpgradeStateChangeNotifier _stateChangeNotifier = UpgradeStateChangeNotifier();
   UpgradeStateChangeNotifier get state => _stateChangeNotifier;
   UpgradeStatus get status => state.status;
-  Iterator<Installer?>? _installers;
+  AppcastItem? get current => state.current;
+  AppcastItem? get latest => state.latest;
 
+  Iterator<Installer?>? _installers;
   Installer? get installer => _installers?.current;
 
   /// The upgrade appcast file url.
   late final String _url;
 
-  init({
+  void init({
     required String url,
     required String currentVersionPath,
     List<InstallInitializer> customInstallInitializers = const [],
