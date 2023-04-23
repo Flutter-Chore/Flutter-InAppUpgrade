@@ -22,7 +22,7 @@ class FileInstallerInitializer extends InstallInitializer {
     return FileInstaller(
       state: state,
       fileURL: data['file_url'],
-      closeOnInstalling: data['close_on_installing'],
+      closeOnInstalling: data['close_on_installing'] ?? true,
     );
   }
 

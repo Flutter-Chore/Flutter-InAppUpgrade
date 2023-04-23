@@ -18,7 +18,7 @@ class IosAppStoreInstallerInitializer extends InstallInitializer {
     return IosAppStoreInstaller(
       state: state,
       appId: data['app_id'],
-      inApp: data['in_app'],
+      inApp: data['in_app'] ?? false,
     );
   }
 }
