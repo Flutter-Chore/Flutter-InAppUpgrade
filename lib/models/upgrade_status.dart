@@ -1,5 +1,6 @@
 
 enum UpgradeStatus {
+  loadingLocalConfig,
   idle,
   checking,
   available,

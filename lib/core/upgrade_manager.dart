@@ -39,18 +39,27 @@ class UpgradeManager {
     required String url,
     required String currentVersionPath,
     List<InstallInitializer> customInstallInitializers = const [],
+    bool crashIfNoLegalConfigFile = false,
   }) {
     _url = url;
 
     _installInitializers.addAll({ for (var item in SystemInstaller.initializers) item.identifier: item });
     _installInitializers.addAll({ for (var item in customInstallInitializers) item.identifier: item });
 
-    CurrentVersionManager.load(currentVersionPath, (version) {
+    state.updateUpgradeStatus(status: UpgradeStatus.loadingLocalConfig);
+    CurrentVersionManager.load(currentVersionPath, crashIfNoLegalConfigFile, (version) {
+      state.updateUpgradeStatus(status: UpgradeStatus.idle);
+      if (version == null) {
+        dismiss();
+        return;
+      }
       state.updateCurrentVersion(version: version);
     });
   }
 
   void checkForUpdates() async {
+    if (status == UpgradeStatus.loadingLocalConfig || status == UpgradeStatus.dismissed) return;
+
     state.updateUpgradeStatus(status: UpgradeStatus.checking);
 
     final uri = Uri.parse(_url);
@@ -78,7 +87,8 @@ class UpgradeManager {
     void Function(int received, int total, bool failed)? onReceiveProgress,
     void Function()? onDone,
   }) {
-    if (installer == null || !installer!.hasDownload()) { return; }
+    if (status == UpgradeStatus.loadingLocalConfig || status == UpgradeStatus.dismissed) return;
+    if (installer == null || !installer!.hasDownload()) return;
     installer?.download(
       url: url,
       file: file,
@@ -88,7 +98,8 @@ class UpgradeManager {
   }
 
   Future<bool> install() async {
-    if (installer == null) { return false; }
+    if (status == UpgradeStatus.loadingLocalConfig || status == UpgradeStatus.dismissed) return false;
+    if (installer == null || status == UpgradeStatus.dismissed) return false;
     return await installer!.install();
   }
 

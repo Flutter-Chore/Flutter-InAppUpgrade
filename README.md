@@ -144,6 +144,8 @@ UpgradeManager.instance.install()
 
 ### Appcast
 
+(**⚠️ If incorrently profile or lack config file, the plugin will not work.**)
+
 An Array of [AppcastItem](#appcastitem). will select the best one as the latest version.
 
 #### AppcastItem
@@ -218,6 +220,7 @@ Plugin's state, will auto update when state changes.
 
 |Name|Description|
 |:--|---|
+|loadingLocalConfig|Plugin's state will be `loadingLocalConfig` when `init()` load local version config file|
 |idle|Plugin's state will be `idle` when `init()` finished, `Initial` state|
 |checking|Plugin's state will be `checking` when calling `checkForUpdates()`|
 |available|Plugin's state will be `available` when has newer version after `checkForUpdates()`|
@@ -443,6 +446,7 @@ void UpgradeManager.instance.init({
     required String url,
     required String currentVersionPath,
     List<InstallInitializer> customInstallInitializers = const [],
+    bool crashIfNoLegalConfigFile = false,
   })
 ```
 
@@ -452,6 +456,7 @@ Init UpgradeManger.
 - url: A URL used to detect if there is a new version of the app.
 - currentVersionPath: A config file path that mark current version, see [Appcast](#appcast), [Create Version Config File at Local](#3-create-version-config-file-at-local-to-mark-apps-current-version).
 - customInstallInitializers: custom InstallInitializer, see [Custom Installers](#custom-installers).
+- crashIfNoLegalConfigFile: Whether crash if no legal config file in local, default is false.
 
 ```dart
 void UpgradeManager.instance.checkForUpdates()
