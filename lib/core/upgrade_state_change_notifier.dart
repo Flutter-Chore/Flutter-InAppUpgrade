@@ -5,7 +5,7 @@ import 'package:upgrade/models/upgrade_status.dart';
 
 class UpgradeStateChangeNotifier extends ChangeNotifier {
 
-  var status = UpgradeStatus.idle;
+  var status = UpgradeStatus.loadingLocalConfig;
   AppcastItem? current;
   AppcastItem? latest;
 

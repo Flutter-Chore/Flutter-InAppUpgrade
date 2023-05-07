@@ -1,3 +1,3 @@
-## 0.0.3
+## 0.0.4
 
-* Improve documentation.
+* Add Whether crash when lack or incorrectly config Configuration File.
