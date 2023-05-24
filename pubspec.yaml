@@ -1,6 +1,6 @@
 name: upgrade
 description: A Flutter plugin for prompting and help users to upgrade when there is a newer version of this app in the app store or server repository.
-version: 0.0.4
+version: 0.0.5
 
 homepage: https://github.com/Flutter-Chore/Flutter-InAppUpgrade
 
