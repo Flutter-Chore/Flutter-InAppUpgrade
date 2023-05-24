@@ -29,6 +29,10 @@ class Appcast {
     return best;
   }
 
+  void add(AppcastItem item) {
+    items.add(item);
+  }
+
   factory Appcast.fromJson(List<Map<String, dynamic>> json) {
     return Appcast(items: json.map((item) => AppcastItem.fromJson(item)).toList());
   }

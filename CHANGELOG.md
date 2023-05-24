@@ -1,3 +1,3 @@
-## 0.0.4
+## 0.0.5
 
-* Add Whether crash when lack or incorrectly config Configuration File.
+* Export Version class.

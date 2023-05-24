@@ -18,3 +18,4 @@ export 'models/appcast_item.dart';
 export 'models/upgrade_status.dart';
 export 'utils/current_version_manager.dart';
 export 'utils/default_file_location.dart';
+export 'package:version/version.dart';
