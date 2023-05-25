@@ -22,11 +22,12 @@ void main() {
 
     final item = AppcastItem.fromJson(json.decode(jsonStr));
 
-
     expect(item.os!.name, OS.android.name);
     expect(item.date!.millisecondsSinceEpoch, time.millisecondsSinceEpoch);
     expect(item.version.minor, 9);
     expect(item.version.preRelease, ["beta"]);
     expect(item.version.build, "nvidia");
   });
+
+  test("", () {});
 }

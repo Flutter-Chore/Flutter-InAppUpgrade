@@ -5,6 +5,8 @@
 /// based on the Sparkle framework by Andy Matuschak at:
 ///     https://sparkle-project.org/documentation/publishing/
 ///
+import 'dart:ffi';
+
 import 'package:upgrade/models/appcast_item.dart';
 
 class Appcast {
@@ -35,6 +37,10 @@ class Appcast {
 
   factory Appcast.fromJson(List<Map<String, dynamic>> json) {
     return Appcast(items: json.map((item) => AppcastItem.fromJson(item)).toList());
+  }
+
+  List<Map<String, dynamic>> toJson() {
+    return items.map((item) => item.toJson()).toList();
   }
 }
 

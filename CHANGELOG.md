@@ -1,3 +1,3 @@
-## 0.0.6
+## 0.0.7
 
-* Refactor Appcast_Item.
+* Appcast and Appcast_Item add toJson().
