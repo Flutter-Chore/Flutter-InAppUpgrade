@@ -28,6 +28,4 @@ void main() {
     expect(item.version.preRelease, ["beta"]);
     expect(item.version.build, "nvidia");
   });
-
-  test("", () {});
 }
