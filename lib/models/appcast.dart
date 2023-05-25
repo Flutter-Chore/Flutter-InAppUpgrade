@@ -5,7 +5,6 @@
 /// based on the Sparkle framework by Andy Matuschak at:
 ///     https://sparkle-project.org/documentation/publishing/
 ///
-import 'dart:ffi';
 
 import 'package:upgrade/models/appcast_item.dart';
 
