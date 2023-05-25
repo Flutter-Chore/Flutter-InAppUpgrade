@@ -1,8 +1,6 @@
 
 import 'dart:io';
 
-import 'package:upgrade/core/installer.dart';
-import 'package:upgrade/core/upgrade_state_change_notifier.dart';
 import 'package:version/version.dart';
 
 class AppcastItem {
@@ -15,6 +13,7 @@ class AppcastItem {
   final String? maximumSystemVersion;
 
   late List<Map<String, dynamic>> _installersConfig;
+  List<Map<String, dynamic>> get installersConfig => _installersConfig;
 
   AppcastItem({
     this.releaseNotes,
@@ -39,15 +38,6 @@ class AppcastItem {
   bool operator<=(AppcastItem item) {
     if (version <= item.version) { return true; }
     return false;
-  }
-
-  Iterable<Installer?> installer({
-    required UpgradeStateChangeNotifier state,
-    required Map<String, InstallInitializer> initializers}) sync* {
-    for (int i = 0; i < _installersConfig.length; i++) {
-      final config = _installersConfig[i];
-      yield initializers[config['initializer']]?.init(state: state, data: config);
-    }
   }
 
   factory AppcastItem.fromJson(Map<String, dynamic> json) {

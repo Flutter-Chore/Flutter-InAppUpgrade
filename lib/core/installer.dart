@@ -10,6 +10,21 @@ import 'package:upgrade/installer/ios_app_store_installer.dart';
 import 'package:upgrade/installer/macos_app_store_installer.dart';
 import 'package:upgrade/models/upgrade_status.dart';
 
+class InstallerHelper {
+
+  static Iterable<Installer?> init({
+    required List<Map<String, dynamic>> configs,
+    required UpgradeStateChangeNotifier state,
+    required Map<String, InstallInitializer> initializers,
+  }) sync* {
+    for (int i = 0; i < configs.length; i++) {
+      final config = configs[i];
+      yield initializers[config['initializer']]?.init(state: state, data: config);
+    }
+  }
+
+}
+
 class SystemInstaller {
 
   static List<InstallInitializer> initializers = [

@@ -62,23 +62,28 @@ class UpgradeManager {
 
     state.updateUpgradeStatus(status: UpgradeStatus.checking);
 
-    final uri = Uri.parse(_url);
-    final response = await Client().get(uri, headers: {'Content-Type': 'application/json;charset=utf-8'});
-    if (response.statusCode != 200) {
-      state.updateUpgradeStatus(status: UpgradeStatus.error);
-      debugPrint("[UpgradeManager] Download Appcast from $_url error.");
-      return;
-    }
+    Client().get(
+      Uri.parse(_url),
+      headers: {'Content-Type': 'application/json;charset=utf-8'},
+    ).then((response) {
+      if (response.statusCode != 200) {
+        state.updateUpgradeStatus(status: UpgradeStatus.error);
+        debugPrint("[UpgradeManager] Download Appcast from $_url error.");
+        return;
+      }
 
-    final appcast = Appcast.fromJson(List<Map<String, dynamic>>.from(json.decode(response.body)));
-    final best = appcast.best();
-    if (best != null) {
-      state.updateLatestVersion(version: best);
-      initInstallers();
-      nextInstaller();
-    } else {
-      state.updateUpgradeStatus(status: UpgradeStatus.upToDate);
-    }
+      final appcast = Appcast.fromJson(List<Map<String, dynamic>>.from(json.decode(response.body)));
+      final best = appcast.best();
+      if (best != null) {
+        state.updateLatestVersion(version: best);
+        initInstallers();
+        nextInstaller();
+      } else {
+        state.updateUpgradeStatus(status: UpgradeStatus.upToDate);
+      }
+    }).catchError((_) {
+      state.updateUpgradeStatus(status: UpgradeStatus.error);
+    });
   }
 
   void download({
@@ -118,8 +123,12 @@ class UpgradeManager {
   void initInstallers() {
     if (status != UpgradeStatus.available) { return; }
 
-    _installers = state.latest?.installer(
-        state: _stateChangeNotifier, initializers: _installInitializers).iterator;
+    _installers = InstallerHelper.init(
+      configs: state.latest!.installersConfig,
+      state: _stateChangeNotifier,
+      initializers: _installInitializers,
+    ).iterator;
+
   }
 
   bool nextInstaller() {
