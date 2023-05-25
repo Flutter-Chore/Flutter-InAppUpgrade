@@ -60,6 +60,19 @@ class AppcastItem {
       installersConfig: List<Map<String, dynamic>>.from(json['installers'] as List<dynamic>),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> map = {};
+    map["release_notes"] = releaseNotes;
+    map["date"] = date?.millisecondsSinceEpoch;
+    map["version"] = version.toString();
+    map["display_version_string"] = displayVersionString;
+    map["os"] = os?.name;
+    map["minimum_system_version"] = minimumSystemVersion;
+    map["maximum_system_version"] = maximumSystemVersion;
+    map["installers"] = installersConfig;
+    return map;
+  }
 }
 
 
