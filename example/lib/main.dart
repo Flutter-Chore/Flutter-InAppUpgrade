@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     UpgradeManager.instance.init(
-      url: "http://192.168.1.3:8000/appcast/latest",
+      url: "http://localhost:8000/appcast/latest",
       currentVersionPath: "assets/version/version.json",
     );
   }
