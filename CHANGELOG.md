@@ -1,3 +1,3 @@
-## 0.0.7
+## 0.0.8
 
-* Appcast and Appcast_Item add toJson().
+* fix FileInstall out of memory when download large file.
