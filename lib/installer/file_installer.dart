@@ -59,30 +59,32 @@ class FileInstaller extends Installer {
 
     state.updateUpgradeStatus(status: UpgradeStatus.downloading);
 
-    final StreamedResponse response = await Client().send(Request('GET', uri));
-    final contentLength = response.contentLength ?? 1;
+    var received = 0;
+    var contentLength = 0;
 
-    List<int> buffer = [];
+    try {
+      final StreamedResponse response = await Client().send(Request('GET', uri));
+      contentLength = response.contentLength ?? 1;
 
-    response.stream.listen((bytes) async {
-      buffer.addAll(bytes);
-      onReceiveProgress?.call(buffer.length, contentLength, false);
-    },
-      onDone: () async {
-        file ??= await defaultFileLocation(uri.pathSegments.last);
-        await file!.writeAsBytes(buffer);
-        filePath = file!.absolute.path;
-        state.updateUpgradeStatus(status: UpgradeStatus.readyToInstall);
-        onReceiveProgress?.call(contentLength, contentLength, false);
-        onDone?.call();
-      },
-      onError: (e) {
-        onReceiveProgress?.call(buffer.length, contentLength, true);
-        state.updateUpgradeStatus(status: UpgradeStatus.error);
-        debugPrint("[UpgradeManager] Downloading Error: ${e.toString()}");
-      },
-      cancelOnError: true,
-    );
+      file ??= await defaultFileLocation(uri.pathSegments.last);
+      final sink = file.openWrite();
+
+      await response.stream.map((stream) {
+        received += stream.length;
+        onReceiveProgress?.call(received, contentLength, false);
+        return stream;
+      }).pipe(sink);
+
+      sink.close();
+      filePath = file.absolute.path;
+      state.updateUpgradeStatus(status: UpgradeStatus.readyToInstall);
+      onReceiveProgress?.call(contentLength, contentLength, false);
+      onDone?.call();
+    } catch (e) {
+      onReceiveProgress?.call(received, contentLength, true);
+      state.updateUpgradeStatus(status: UpgradeStatus.error);
+      debugPrint("[UpgradeManager] Downloading Error: ${e.toString()}");
+    }
   }
 
   @override
